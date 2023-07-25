@@ -38,7 +38,10 @@ export default function Edit({ attributes, setAttributes }) {
 	const [ selectedBookmakers, setSelectedBookmakers ] = useState(
 		attributes.selectedBookmakers ? JSON.parse(attributes.selectedBookmakers) : []
 	);
-	
+const selectedBookmakersArray = attributes.selectedBookmakers ? JSON.parse(attributes.selectedBookmakers) : [];
+
+// Then use selectedBookmakersArray when you are mapping in the return function
+
     useEffect(() => {
         fetch('/wp-json/odds/v1/odds')
             .then(response => response.json())
@@ -57,6 +60,7 @@ export default function Edit({ attributes, setAttributes }) {
         setSelectedBookmakers(selected);
         setAttributes({ selectedBookmakers: JSON.stringify(selected) }); 
     }
+	
     return (
   <div { ...blockProps }>
     <InspectorControls key="setting">
@@ -90,35 +94,36 @@ export default function Edit({ attributes, setAttributes }) {
                         <th>Odds</th>
                     </tr>
                 </thead>
-                <tbody>
-                    {selectedBookmakers.map(bookmakerId => {
-                        const bookmaker = oddsData.find(odd => odd.bookmaker === bookmakerId);
-                        if (bookmaker) {
-                            let displayOdd;
-							switch (attributes.oddsFormat) {
-								case 'decimal':
-									displayOdd = bookmaker.odds;
-									break;
-								case 'american':
-									displayOdd = toAmerican(Number(bookmaker.odds)); // ensure odds is a number
-									break;
-								case 'fractional':
-									displayOdd = toFractional(Number(bookmaker.odds)); // convert to fractional
-									break;
-								default:
-									displayOdd = bookmaker.odds;
-							}
-							
-                            return (
-                                <tr key={bookmakerId}>
-                                    <td>{bookmaker.bookmaker}</td>
-                                    <td>{displayOdd}</td>
-                                </tr>
-                            );
-                        }
-                        return null;
-                    })}
-                </tbody>
+				<tbody>
+    {selectedBookmakersArray.map(bookmakerId => {
+        const bookmaker = oddsData.find(odd => odd.bookmaker === bookmakerId);
+        if (bookmaker) {
+            let displayOdd;
+            switch (attributes.oddsFormat) {
+                case 'decimal':
+                    displayOdd = bookmaker.odds;
+                    break;
+                case 'american':
+                    displayOdd = toAmerican(Number(bookmaker.odds)); // ensure odds is a number
+                    break;
+                case 'fractional':
+                    displayOdd = toFractional(Number(bookmaker.odds)); // convert to fractional
+                    break;
+                default:
+                    displayOdd = bookmaker.odds;
+            }
+            
+            return (
+                <tr key={bookmakerId}>
+                    <td>{bookmaker.bookmaker}</td>
+                    <td>{displayOdd}</td>
+                </tr>
+            );
+        }
+        return null;
+    })}
+</tbody>
+
             </table> :
             <p>No bookmakers selected</p>
         :

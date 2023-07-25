@@ -55,6 +55,10 @@ function Edit({
   const [oddsData, setOddsData] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
   const [bookmakers, setBookmakers] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)([]);
   const [selectedBookmakers, setSelectedBookmakers] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(attributes.selectedBookmakers ? JSON.parse(attributes.selectedBookmakers) : []);
+  const selectedBookmakersArray = attributes.selectedBookmakers ? JSON.parse(attributes.selectedBookmakers) : [];
+
+  // Then use selectedBookmakersArray when you are mapping in the return function
+
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     fetch('/wp-json/odds/v1/odds').then(response => response.json()).then(data => {
       setOddsData(data);
@@ -100,7 +104,7 @@ function Edit({
     onChange: value => setAttributes({
       oddsFormat: value
     })
-  }))), oddsData ? selectedBookmakers.length > 0 ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("table", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("thead", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("tr", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("th", null, "Bookmaker"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("th", null, "Odds"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("tbody", null, selectedBookmakers.map(bookmakerId => {
+  }))), oddsData ? selectedBookmakers.length > 0 ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("table", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("thead", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("tr", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("th", null, "Bookmaker"), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("th", null, "Odds"))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("tbody", null, selectedBookmakersArray.map(bookmakerId => {
     const bookmaker = oddsData.find(odd => odd.bookmaker === bookmakerId);
     if (bookmaker) {
       let displayOdd;
