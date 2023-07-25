@@ -1,0 +1,24 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "odds-comparison/odds-comparison",
+  "version": "1.0.0",
+  "title": "Odds-comparison",
+  "category": "widgets",
+  "icon": "flag",
+  "description": "Displays odds comparisons",
+  "attributes": {
+    "bookmaker": {
+      "type": "string",
+      "default": "Bookmaker1"
+    }
+  },
+  "supports": {
+    "html": false
+  },
+  "textdomain": "odds-comparison",
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style-index.css",
+  "render": "file:./render.php"
+}
