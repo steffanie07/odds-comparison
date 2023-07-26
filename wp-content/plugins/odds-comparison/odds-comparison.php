@@ -37,7 +37,7 @@ function create_odds_table() {
             id mediumint(9) NOT NULL AUTO_INCREMENT,
             bookmaker tinytext NOT NULL,
 			market tinytext NOT NULL,
-		
+			url tinytext  NULL,
             odds float NOT NULL,
             PRIMARY KEY  (id)
         ) $charset_collate;";
