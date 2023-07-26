@@ -3,34 +3,41 @@ from bs4 import BeautifulSoup
 import requests
 
 # Connect to your database
-conn = pymysql.connect(host='127.0.0.1', user='root', password='root', db='local')
+conn = pymysql.connect(host='', user='', password='', db='')
 
-def scrape_odds(url, conn):
+def scrape_odds(urls, markets, conn):
     headers = {'User-Agent': 'Mozilla/5.0'}
-    response = requests.get(url, headers=headers)
-    soup = BeautifulSoup(response.text, 'html.parser')
+    odds_data = []
 
-    odds = {}
+    for url in urls:
+        response = requests.get(url, headers=headers)
+        soup = BeautifulSoup(response.text, 'html.parser')
 
-    # Find table containing odds
-    table = soup.find('table', {'class': 'eventTable'})
-    if table is not None:
-        rows = table.find_all('tr')
-        for row in rows:
-            cells = row.find_all('td')
-            # Extract bookmaker and odds
-            if len(cells) > 1:
-                bookmaker = cells[0].get_text(strip=True)
-                odds_value = cells[1].get_text(strip=True)
-                odds[bookmaker] = odds_value
+        table = soup.find('table', {'class': 'eventTable'})
+        if table is not None:
+            rows = table.find_all('tr')
+            for row in rows:
+                cells = row.find_all('td')
+                # Extract bookmaker and odds
+                if len(cells) > 1:
+                    bookmaker = cells[0].get_text(strip=True)
+                    odds_value = cells[1].get_text(strip=True)
+                    odds_data.append((url, markets, bookmaker, odds_value))
 
-    # Insert the odds into the database
     with conn.cursor() as cursor:
-        for bookmaker, odd in odds.items():
-            sql = "INSERT INTO odds_comparison (bookmaker, odds) VALUES (%s, %s)"
-            cursor.execute(sql, (bookmaker, odd))
+        for url, market, bookmaker, odd in odds_data:
+            sql = "INSERT INTO odds_comparison (url, market, bookmaker, odds) VALUES (%s, %s, %s, %s)"
+            cursor.execute(sql, (url, market, bookmaker, odd))
     conn.commit()
 
-url = 'https://www.oddschecker.com/football/world/brazil/serie-a/coritiba-v-fluminense/winner'  # Replace with your URL
-scrape_odds(url, conn)
+urls = [
+    'https://www.oddschecker.com/football/world/brazil/serie-a/coritiba-v-fluminense/winner',
+    # Add more URLs here...
+]
+
+markets = 'Serie A'  # Change this to the appropriate market for all URLs
+
+# Scrape odds for the provided URLs and markets
+scrape_odds(urls, markets, conn)
+
 conn.close()
